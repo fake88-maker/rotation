@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS Part 발표 일정</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f5f5f4;--border:rgba(0,0,0,0.12);
+  --text:#1a1a1a;--text2:#6b7280;--text3:#9ca3af;
+  --success-bg:#f0fdf4;--success:#16a34a;--success-border:#bbf7d0;
+  --danger-bg:#fef2f2;--danger:#dc2626;--danger-border:#fecaca;
+  --warn-bg:#fffbeb;--warn:#d97706;
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1c1c1e;--bg2:#2c2c2e;--border:rgba(255,255,255,0.12);
+    --text:#f5f5f5;--text2:#a1a1aa;--text3:#71717a;
+    --success-bg:#052e16;--success:#4ade80;--success-border:#166534;
+    --danger-bg:#450a0a;--danger:#f87171;--danger-border:#991b1b;
+    --warn-bg:#431407;--warn:#fbbf24;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;background:var(--bg2);color:var(--text);min-height:100vh;}
+.topbar{background:var(--bg);border-bottom:0.5px solid var(--border);padding:.75rem 1rem;position:sticky;top:0;}
+.topbar-inner{max-width:600px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.app-title{font-size:15px;font-weight:500;}
+.sync-status{font-size:12px;display:flex;align-items:center;gap:4px;color:var(--text3);}
+.wrap{max-width:600px;margin:0 auto;padding:1rem;}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:.75rem;}
+.section-title{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.75rem;}
+.wh{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.wdate{font-size:15px;font-weight:500;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;}
+.b0{background:var(--bg2);color:var(--text2);}
+.b1{background:var(--warn-bg);color:var(--warn);}
+.b2{background:var(--success-bg);color:var(--success);}
+.srow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:0.5px solid var(--border);}
+.snum{font-size:12px;color:var(--text3);min-width:16px;text-align:right;}
+.sname{flex:1;font-size:15px;}
+.sname.done{color:var(--text3);text-decoration:line-through;}
+.sicon{font-size:15px;}
+.slabel{font-size:12px;}
+.empty{font-size:13px;color:var(--text3);padding:8px 0;text-align:center;}
+.divider{height:0.5px;background:var(--border);margin:1.25rem 0;}
+.next-card{background:var(--bg);border:2px solid var(--success-border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:.75rem;}
+.next-label{font-size:11px;font-weight:500;color:var(--success);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:4px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="app-title">DS Part 발표 일정</span>
+    <div class="sync-status" id="syncStatus">
+      <i class="ti ti-loader" id="loadIcon"></i> 불러오는 중
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="wrap">
+</div>
+
+<script>
+const RAW_URL='https://gist.githubusercontent.com/fake88-maker/1fad97700d97bf0b6a27b02c5e818c2e/raw/rotation_data.json';
+
+function fd(d){if(!d)return'-';try{const s=String(d),dt=new Date(s.includes('T')?s:s+'T00:00:00');if(isNaN(dt))return'-';return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}catch(e){return'-';}}
+
+function wSt(w){
+  if(!w.slots.length)return 0;
+  if(w.slots.every(s=>s.confirmed!==null))return 2;
+  if(w.slots.some(s=>s.confirmed!==null))return 1;
+  return 0;
+}
+
+async function load(){
+  try{
+    const res=await fetch(RAW_URL+'?t='+Date.now());
+    if(!res.ok)throw new Error(res.status);
+    const v=await res.json();
+    render(v.weeks||[]);
+    document.getElementById('syncStatus').innerHTML=`<i class="ti ti-check"></i> 업데이트 완료`;
+  }catch(e){
+    document.getElementById('syncStatus').innerHTML=`<i class="ti ti-alert-circle"></i> 불러오기 실패`;
+    document.getElementById('wrap').innerHTML=`<p class="empty" style="margin-top:2rem;">데이터를 불러올 수 없습니다.</p>`;
+  }
+}
+
+function render(weeks){
+  const today=new Date();today.setHours(0,0,0,0);
+  const sorted=[...weeks].sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  const upcoming=sorted.filter(w=>new Date(w.date+'T00:00:00')>=today);
+  const past=sorted.filter(w=>new Date(w.date+'T00:00:00')<today);
+
+  let h='';
+
+  // 예정
+  if(upcoming.length){
+    // 가장 가까운 것 강조
+    const next=upcoming[upcoming.length-1];
+    h+=`<div class="next-card">
+      <p class="next-label"><i class="ti ti-calendar-event"></i> 다음 발표</p>
+      <div class="wh"><span class="wdate">${next.date}</span></div>`;
+    next.slots.forEach((s,i)=>{
+      h+=`<div class="srow"><span class="snum">${i+1}</span><span class="sname">${s.name}</span></div>`;
+    });
+    h+=`</div>`;
+
+    // 나머지 예정
+    const rest=upcoming.slice(0,-1).reverse();
+    if(rest.length){
+      rest.forEach(w=>{
+        const st=wSt(w);const bc=st===1?'b1':'b0';const bl=st===1?'진행중':'예정';
+        h+=`<div class="card"><div class="wh"><span class="wdate">${w.date}</span><span class="badge ${bc}">${bl}</span></div>`;
+        w.slots.forEach((s,i)=>{
+          h+=`<div class="srow"><span class="snum">${i+1}</span><span class="sname">${s.name}</span></div>`;
+        });
+        h+=`</div>`;
+      });
+    }
+  } else {
+    h+=`<p class="empty" style="margin-bottom:1rem;">예정된 발표가 없습니다.</p>`;
+  }
+
+  // 구분선
+  if(past.length){
+    h+=`<div class="divider"></div>
+    <p class="section-title"><i class="ti ti-history"></i> 지난 발표</p>`;
+    past.forEach(w=>{
+      h+=`<div class="card"><div class="wh"><span class="wdate">${w.date}</span><span class="badge b2">완료</span></div>`;
+      w.slots.forEach((s,i)=>{
+        const confirmed=s.confirmed===true;
+        const notPresent=s.confirmed===false;
+        const ic=confirmed?`<i class="ti ti-check sicon" style="color:var(--success);"></i>`:notPresent?`<i class="ti ti-x sicon" style="color:var(--danger);"></i>`:`<i class="ti ti-minus sicon" style="color:var(--text3);"></i>`;
+        const lb=confirmed?'발표함':notPresent?'불참':'';
+        const lbc=confirmed?'var(--success)':notPresent?'var(--danger)':'var(--text3)';
+        h+=`<div class="srow">
+          <span class="snum">${i+1}</span>
+          <span class="sname${confirmed?'':notPresent?' done':''}">${s.name}</span>
+          ${ic}
+          ${lb?`<span class="slabel" style="color:${lbc};">${lb}</span>`:''}
+        </div>`;
+      });
+      h+=`</div>`;
+    });
+  }
+
+  document.getElementById('wrap').innerHTML=h;
+}
+
+load();
+// 5분마다 자동 갱신
+setInterval(load, 5*60*1000);
+</script>
+</body>
+</html>
