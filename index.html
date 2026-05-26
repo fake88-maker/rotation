@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS Part 발표 로테이션</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root{--bg:#ffffff;--bg2:#f5f5f4;--border:rgba(0,0,0,0.12);--text:#1a1a1a;--text2:#6b7280;--text3:#9ca3af;--success-bg:#f0fdf4;--success:#16a34a;--success-border:#bbf7d0;--danger-bg:#fef2f2;--danger:#dc2626;--danger-border:#fecaca;--warn-bg:#fffbeb;--warn:#d97706;--info-bg:#eff6ff;--info:#2563eb;--radius:8px;--radius-lg:12px;}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1e;--bg2:#2c2c2e;--border:rgba(255,255,255,0.12);--text:#f5f5f5;--text2:#a1a1aa;--text3:#71717a;--success-bg:#052e16;--success:#4ade80;--success-border:#166534;--danger-bg:#450a0a;--danger:#f87171;--danger-border:#991b1b;--warn-bg:#431407;--warn:#fbbf24;--info-bg:#1e3a5f;--info:#60a5fa;}}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;background:var(--bg2);color:var(--text);min-height:100vh;}
+.wrap{max-width:680px;margin:0 auto;padding:1.5rem 1rem;}
+.topbar{background:var(--bg);border-bottom:0.5px solid var(--border);padding:.75rem 1rem;}
+.topbar-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.app-title{font-size:15px;font-weight:500;}
+.sync-status{font-size:12px;display:flex;align-items:center;gap:4px;}
+.sync-ok{color:var(--success);}.sync-ing{color:var(--text3);}.sync-err{color:var(--danger);}
+.tabs{display:flex;gap:4px;margin-bottom:1rem;}
+.tab{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius);padding:7px 16px;font-size:13px;color:var(--text2);cursor:pointer;}
+.tab.on{background:var(--text);color:var(--bg);border-color:transparent;}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:.75rem;}
+.wh{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.wdate{font-size:14px;font-weight:500;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;}
+.b0{background:var(--bg2);color:var(--text2);}.b1{background:var(--warn-bg);color:var(--warn);}.b2{background:var(--success-bg);color:var(--success);}
+.srow{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:0.5px solid var(--border);}
+.sn{flex:1;font-size:14px;}.sn.done{color:var(--text3);text-decoration:line-through;}
+.cb{border:0.5px solid var(--border);border-radius:var(--radius);padding:4px 10px;font-size:12px;cursor:pointer;background:transparent;color:var(--text2);display:flex;align-items:center;gap:3px;}
+.cb:hover{background:var(--bg2);}
+.cb.yes.on{background:var(--success-bg);color:var(--success);border-color:var(--success-border);}
+.cb.no.on{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border);}
+.sm{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius);padding:4px 8px;font-size:12px;color:var(--text2);cursor:pointer;}
+.sm:hover{background:var(--bg2);}.sm.d{color:var(--danger);border-color:var(--danger-border);}
+.btn-announce{background:var(--info-bg);color:var(--info);border:0.5px solid var(--info);border-radius:var(--radius);padding:5px 10px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;}
+.btn-announce:hover{opacity:.8;}
+.pri{background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.pri:hover{opacity:.85;}.pri:disabled{opacity:.4;cursor:default;}
+.sec{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius);padding:7px 14px;font-size:13px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:5px;}
+.sec:hover{background:var(--bg2);}
+.mrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.mrow:last-child{border-bottom:none;}
+.mn{flex:1;font-size:14px;font-weight:500;}.mn.off{color:var(--text3);text-decoration:line-through;font-weight:400;}
+.nb{display:inline-block;font-size:10px;background:var(--info-bg);color:var(--info);padding:1px 6px;border-radius:4px;margin-left:4px;vertical-align:middle;}
+.empty{font-size:13px;color:var(--text3);padding:8px 0;}
+.ml{margin-left:auto;}.hint{font-size:11px;color:var(--text3);}
+.pform{background:var(--bg2);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1rem;}
+.pform-row{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;}
+.flabel{font-size:11px;color:var(--text3);margin-bottom:3px;}
+.dinput{border:0.5px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-size:13px;background:var(--bg);color:var(--text);}
+select.dinput{padding:5px 6px;}
+input[type=text],input[type=password],input[type=date]{border:0.5px solid var(--border);border-radius:var(--radius);padding:6px 10px;font-size:13px;background:var(--bg);color:var(--text);outline:none;}
+input:focus,select:focus{border-color:var(--info);}
+.tbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.card-footer{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border);}
+.splash{display:flex;align-items:center;justify-content:center;min-height:80vh;}
+.splash-box{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:2rem;max-width:400px;width:100%;}
+.splash-icon{font-size:36px;color:var(--text3);margin-bottom:1rem;text-align:center;}
+.splash-title{font-size:16px;font-weight:500;margin-bottom:.5rem;}
+.splash-desc{font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;}
+.input-label{font-size:12px;color:var(--text2);margin-bottom:4px;}
+.date-edit-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="app-title">DS Part 발표 로테이션</span>
+    <div class="sync-status" id="syncStatus"></div>
+    <button class="sec" id="settingsBtn" onclick="openSettings()" style="display:none;padding:5px 8px;font-size:12px;" title="설정"><i class="ti ti-settings"></i></button>
+  </div>
+</div>
+<div class="wrap">
+  <div id="splash" class="splash">
+    <div class="splash-box">
+      <div class="splash-icon"><i class="ti ti-brand-github"></i></div>
+      <p class="splash-title">초기 설정</p>
+      <p class="splash-desc">모든 정보는 이 기기에만 저장됩니다. 코드에 포함되지 않습니다.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <p class="input-label">GitHub Token (Gist 읽기/쓰기)</p>
+          <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxx" style="width:100%;" onkeydown="if(event.key==='Enter')connect()">
+        </div>
+        <div>
+          <p class="input-label">Telegram Bot Token</p>
+          <input type="password" id="tgTokenInput" placeholder="1234567890:AAF..." style="width:100%;">
+        </div>
+        <div>
+          <p class="input-label">Telegram 채널 ID</p>
+          <input type="text" id="tgChannelInput" placeholder="-100xxxxxxxxxx" style="width:100%;">
+        </div>
+        <button class="pri" onclick="connect()" style="justify-content:center;"><i class="ti ti-plug"></i> 연결</button>
+        <p id="connectErr" style="font-size:12px;color:var(--danger);display:none;"></p>
+      </div>
+    </div>
+  </div>
+  <div id="settingsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center;">
+    <div class="splash-box" style="margin:1rem;">
+      <p class="splash-title" style="margin-bottom:1rem;">설정 변경</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <p class="input-label">GitHub Token</p>
+          <input type="password" id="editGhToken" style="width:100%;">
+        </div>
+        <div>
+          <p class="input-label">Telegram Bot Token</p>
+          <input type="password" id="editTgToken" style="width:100%;">
+        </div>
+        <div>
+          <p class="input-label">Telegram 채널 ID</p>
+          <input type="text" id="editTgChannel" style="width:100%;">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="pri" onclick="saveSettings()" style="flex:1;justify-content:center;">저장</button>
+          <button class="sec" onclick="closeSettings()" style="flex:1;justify-content:center;">취소</button>
+        </div>
+        <button class="sm d" onclick="clearAll()" style="width:100%;padding:8px;text-align:center;">전체 초기화</button>
+      </div>
+    </div>
+  </div>
+  <div id="app" style="display:none;"></div>
+</div>
+<script>
+const GIST_ID='1fad97700d97bf0b6a27b02c5e818c2e';
+const GIST_FILE='rotation_data.json';
+const VIEW_URL='https://fake88-maker.github.io/rotation/rotation_view.html';
+const K={gh:'rot_gh_token',tg:'rot_tg_token',ch:'rot_tg_channel'};
+
+const DM=[{n:'홍윤기',j:'2017-08-21'},{n:'남호창',j:'2019-09-23'},{n:'김준우',j:'2019-09-09'},{n:'손주희',j:'2022-03-02'},{n:'김진수',j:'2022-06-02'},{n:'지영택',j:'2022-08-01'},{n:'홍승기',j:'2022-09-01'},{n:'이수상',j:'2023-02-01'},{n:'지승영',j:'2024-02-26'},{n:'이송',j:'2024-04-01'},{n:'한가인',j:'2024-05-16'},{n:'김예진',j:'2024-09-01'},{n:'이기휘',j:'2024-09-01'},{n:'최서원',j:'2024-10-14'},{n:'조대희',j:'2025-08-01'},{n:'박근우',j:'2025-12-01'}];
+const PAST=[{date:'2026-04-28',names:['남호창','홍윤기','김준우']},{date:'2026-05-12',names:['김진수','지영택','홍승기']}];
+
+let S={members:[],weeks:[],tab:'sched',nm:'',nj:'',showPast:false,pd:'',pp:['','',''],editDateWid:null,editDateVal:''};
+let ghToken=localStorage.getItem(K.gh)||'';
+let tgToken=localStorage.getItem(K.tg)||'';
+let tgChannel=localStorage.getItem(K.ch)||'';
+let saveTimer=null;
+
+function setSyncStatus(type,msg){const el=document.getElementById('syncStatus');el.className='sync-status sync-'+type;const icons={ok:'ti-cloud-check',ing:'ti-cloud-upload',err:'ti-cloud-exclamation'};el.innerHTML=`<i class="ti ${icons[type]||'ti-cloud'}"></i>${msg}`;}
+function fd(d){if(!d)return'-';try{const s=String(d),dt=new Date(s.includes('T')?s:s+'T00:00:00');if(isNaN(dt))return'-';return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}catch(e){return'-';}}
+function nextTue(from){const d=from?new Date(String(from).includes('T')?from:from+'T00:00:00'):new Date();d.setHours(0,0,0,0);const diff=(2-d.getDay()+7)%7||7;d.setDate(d.getDate()+diff);return fd(d);}
+function effLast(name){const m=S.members.find(m=>m.name===name);if(!m)return null;let best=m.joinDate;S.weeks.forEach(w=>w.slots.forEach(s=>{if(s.name===name&&s.confirmed===true&&new Date(w.date)>new Date(best))best=w.date;}));return best;}
+function pickTop(date){const td=new Date(date+'T00:00:00');const c=S.members.filter(m=>m.active&&(!m.nextAvail||new Date(m.nextAvail+'T00:00:00')<=td));c.sort((a,b)=>{const d=new Date(a.lastDate+'T00:00:00')-new Date(b.lastDate+'T00:00:00');return d||a.name.localeCompare(b.name,'ko');});return c.slice(0,3);}
+
+async function gistGet(){const res=await fetch(`https://api.github.com/gists/${GIST_ID}`,{headers:{Authorization:`token ${ghToken}`,'Accept':'application/vnd.github.v3+json'}});if(!res.ok)throw new Error('불러오기 실패 ('+res.status+')');const data=await res.json();return data.files[GIST_FILE]?.content||'{}';}
+async function gistPatch(content){const res=await fetch(`https://api.github.com/gists/${GIST_ID}`,{method:'PATCH',headers:{Authorization:`token ${ghToken}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify({files:{[GIST_FILE]:{content}}})});if(!res.ok)throw new Error('저장 실패 ('+res.status+')');}
+
+async function announce(wid){
+  if(!tgToken||!tgChannel){alert('설정에서 Telegram 토큰과 채널 ID를 먼저 입력해주세요.');return;}
+  const w=S.weeks.find(w=>w.id===wid);if(!w)return;
+  const names=w.slots.map((s,i)=>`${i+1}. ${s.name}`).join('\n');
+  const text=`📢 DS Part 발표 안내\n\n📅 ${w.date}\n\n${names}\n\n👉 ${VIEW_URL}`;
+  try{
+    const res=await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:tgChannel,text})});
+    const data=await res.json();
+    if(data.ok)alert('채널 공지 완료!');
+    else alert('전송 실패: '+data.description);
+  }catch(e){alert('전송 오류: '+e.message);}
+}
+
+async function connect(){
+  const gh=document.getElementById('tokenInput').value.trim();
+  const tg=document.getElementById('tgTokenInput').value.trim();
+  const ch=document.getElementById('tgChannelInput').value.trim();
+  if(!gh){document.getElementById('connectErr').textContent='GitHub 토큰을 입력해주세요.';document.getElementById('connectErr').style.display='block';return;}
+  ghToken=gh;
+  try{
+    await gistGet();
+    localStorage.setItem(K.gh,gh);
+    if(tg)localStorage.setItem(K.tg,tg);
+    if(ch)localStorage.setItem(K.ch,ch);
+    tgToken=tg;tgChannel=ch;
+    document.getElementById('connectErr').style.display='none';
+    await loadFromGist();
+  }catch(e){
+    document.getElementById('connectErr').textContent='연결 실패: GitHub 토큰을 확인해주세요.';
+    document.getElementById('connectErr').style.display='block';
+    ghToken='';
+  }
+}
+
+function openSettings(){
+  document.getElementById('editGhToken').value=ghToken;
+  document.getElementById('editTgToken').value=tgToken;
+  document.getElementById('editTgChannel').value=tgChannel;
+  document.getElementById('settingsModal').style.display='flex';
+}
+function closeSettings(){document.getElementById('settingsModal').style.display='none';}
+function saveSettings(){
+  ghToken=document.getElementById('editGhToken').value.trim();
+  tgToken=document.getElementById('editTgToken').value.trim();
+  tgChannel=document.getElementById('editTgChannel').value.trim();
+  if(ghToken)localStorage.setItem(K.gh,ghToken);
+  if(tgToken)localStorage.setItem(K.tg,tgToken);
+  if(tgChannel)localStorage.setItem(K.ch,tgChannel);
+  closeSettings();
+  alert('저장됐습니다.');
+}
+function clearAll(){if(!confirm('모든 설정과 데이터를 초기화할까요?'))return;Object.values(K).forEach(k=>localStorage.removeItem(k));location.reload();}
+
+async function loadFromGist(){setSyncStatus('ing','불러오는 중...');try{const content=await gistGet();const v=JSON.parse(content);S.members=v.members||[];S.weeks=v.weeks||[];if(!S.members.length)initDefaults();document.getElementById('splash').style.display='none';document.getElementById('app').style.display='block';document.getElementById('settingsBtn').style.display='flex';setSyncStatus('ok','동기화 완료');render();}catch(e){setSyncStatus('err',e.message);}}
+function initDefaults(){const ldMap={};PAST.forEach(p=>p.names.forEach(n=>{if(!ldMap[n]||p.date>ldMap[n])ldMap[n]=p.date;}));S.members=DM.map((m,i)=>({id:i+1,name:m.n,joinDate:m.j,lastDate:ldMap[m.n]||m.j,nextAvail:null,active:true}));S.weeks=[];PAST.forEach((p,i)=>{S.weeks.push({id:i+1,date:p.date,slots:p.names.map(n=>({name:n,confirmed:true}))});});}
+function sv(){clearTimeout(saveTimer);setSyncStatus('ing','저장 중...');saveTimer=setTimeout(async()=>{try{await gistPatch(JSON.stringify({members:S.members,weeks:S.weeks},null,2));setSyncStatus('ok','저장 완료');}catch(e){setSyncStatus('err','저장 실패');}},800);}
+
+function addWeek(){const date=nextTue();if(S.weeks.some(w=>w.date===date))return;const ps=pickTop(date);if(!ps.length){alert('선택 가능한 활성 멤버가 없습니다.');return;}S.weeks.unshift({id:Date.now(),date,slots:ps.map(p=>({name:p.name,confirmed:null}))});sv();render();}
+function addPastWeek(){const date=S.pd;if(!date){alert('날짜를 입력해주세요.');return;}if(S.weeks.some(w=>w.date===date)){alert('해당 날짜가 이미 존재합니다.');return;}const names=[...new Set(S.pp.filter(n=>n))];if(!names.length){alert('발표자를 선택해주세요.');return;}const week={id:Date.now(),date,slots:names.map(n=>({name:n,confirmed:true}))};S.weeks.push(week);names.forEach(name=>{const m=S.members.find(m=>m.name===name);if(m&&new Date(date)>new Date(m.lastDate))m.lastDate=date;});S.pd='';S.pp=['','',''];S.showPast=false;sv();render();}
+function startEditDate(wid){const w=S.weeks.find(w=>w.id===wid);S.editDateWid=wid;S.editDateVal=w.date;render();}
+function confirmEditDate(wid){const newDate=S.editDateVal;if(!newDate){cancelEditDate();return;}if(S.weeks.some(w=>w.date===newDate&&w.id!==wid)){alert('같은 날짜가 이미 있습니다.');return;}const w=S.weeks.find(w=>w.id===wid);if(w)w.date=newDate;S.editDateWid=null;S.editDateVal='';sv();render();}
+function cancelEditDate(){S.editDateWid=null;S.editDateVal='';render();}
+function setConf(wid,si,val){const w=S.weeks.find(w=>w.id===wid);if(!w)return;const slot=w.slots[si];const prev=slot.confirmed;slot.confirmed=slot.confirmed===val?null:val;const m=S.members.find(m=>m.name===slot.name);if(m){if(slot.confirmed===true)m.lastDate=w.date;else if(prev===true)m.lastDate=effLast(slot.name);}sv();render();}
+function swapSlot(wid,si){const w=S.weeks.find(w=>w.id===wid);if(!w)return;const excl=w.slots[si].name;const m=S.members.find(m=>m.name===excl);if(m){const d=new Date(w.date+'T00:00:00');d.setDate(d.getDate()+1);m.nextAvail=fd(d);}const cur=w.slots.map(s=>s.name);const td=new Date(w.date+'T00:00:00');const c=S.members.filter(m=>m.active&&!cur.includes(m.name)&&(!m.nextAvail||new Date(m.nextAvail+'T00:00:00')<=td));c.sort((a,b)=>new Date(a.lastDate+'T00:00:00')-new Date(b.lastDate+'T00:00:00'));if(c.length)w.slots[si]={name:c[0].name,confirmed:null};else w.slots.splice(si,1);sv();render();}
+function delWeek(wid){if(!confirm('삭제할까요?'))return;const w=S.weeks.find(w=>w.id===wid);S.weeks=S.weeks.filter(w=>w.id!==wid);if(w)w.slots.forEach(s=>{if(s.confirmed===true){const m=S.members.find(m=>m.name===s.name);if(m)m.lastDate=effLast(s.name);}});sv();render();}
+function setLast(id,val){const m=S.members.find(m=>m.id===id);if(m&&val){m.lastDate=val;sv();}}
+function toggleActive(id){const m=S.members.find(m=>m.id===id);if(m){m.active=!m.active;sv();render();}}
+function addMem(){const name=S.nm.trim();if(!name)return;const j=S.nj||fd(new Date());S.members.push({id:Date.now(),name,joinDate:j,lastDate:j,nextAvail:null,active:true});S.nm='';S.nj='';sv();render();}
+function delMem(id){if(!confirm('삭제할까요?'))return;S.members=S.members.filter(m=>m.id!==id);sv();render();}
+function wSt(w){if(!w.slots.length)return 0;if(w.slots.every(s=>s.confirmed!==null))return 2;if(w.slots.some(s=>s.confirmed!==null))return 1;return 0;}
+
+function render(){
+  const sorted=[...S.weeks].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const nt=nextTue();const hasNext=S.weeks.some(w=>w.date===nt);const nxtNames=pickTop(nt).map(m=>m.name);
+  const activeNames=S.members.filter(m=>m.active).map(m=>m.name);
+  let h=`<div class="tabs"><button class="tab ${S.tab==='sched'?'on':''}" onclick="S.tab='sched';render()">발표 일정</button><button class="tab ${S.tab==='mems'?'on':''}" onclick="S.tab='mems';render()">멤버</button><button class="tab ${S.tab==='hist'?'on':''}" onclick="S.tab='hist';render()">기록</button></div>`;
+  if(S.tab==='sched'){
+    h+=`<div class="tbar"><button class="pri" onclick="addWeek()" ${hasNext?'disabled':''}><i class="ti ti-calendar-plus"></i> 다음 주 선정 <span style="font-size:11px;opacity:.65;font-weight:400;">${nt}</span></button><button class="sec" onclick="S.showPast=!S.showPast;render()"><i class="ti ti-history"></i> 과거 입력</button></div>`;
+    if(S.showPast){const so=`<option value="">선택</option>`+activeNames.map(n=>`<option value="${n}">${n}</option>`).join('');h+=`<div class="pform"><p style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--text2);">과거 발표 입력 (완료 처리)</p><div class="pform-row"><div><p class="flabel">발표일</p><input type="date" class="dinput" value="${S.pd}" onchange="S.pd=this.value" style="width:140px;"></div><div><p class="flabel">발표자 1</p><select class="dinput" onchange="S.pp[0]=this.value">${so}</select></div><div><p class="flabel">발표자 2</p><select class="dinput" onchange="S.pp[1]=this.value">${so}</select></div><div><p class="flabel">발표자 3</p><select class="dinput" onchange="S.pp[2]=this.value">${so}</select></div><button class="pri" onclick="addPastWeek()" style="align-self:flex-end;">추가</button></div></div>`;}
+    if(!sorted.length)h+=`<p class="empty">발표 기록이 없습니다.</p>`;
+    sorted.forEach(w=>{
+      const st=wSt(w);const bc=st===2?'b2':st===1?'b1':'b0';const bl=st===2?'완료':st===1?'진행중':'예정';
+      const isEditing=S.editDateWid===w.id;
+      h+=`<div class="card"><div class="wh">`;
+      if(isEditing){h+=`<div class="date-edit-row"><input type="date" class="dinput" value="${S.editDateVal}" onchange="S.editDateVal=this.value" style="width:140px;"><button class="sm" onclick="confirmEditDate(${w.id})" style="color:var(--success);border-color:var(--success-border);">확인</button><button class="sm" onclick="cancelEditDate()">취소</button></div>`;}
+      else{h+=`<span class="wdate">${w.date}</span><span class="badge ${bc}">${bl}</span><button class="sm" onclick="startEditDate(${w.id})" title="날짜 변경" style="padding:4px 6px;"><i class="ti ti-pencil"></i></button>`;}
+      h+=`<button class="sm d ml" onclick="delWeek(${w.id})"><i class="ti ti-trash"></i></button></div>`;
+      w.slots.forEach((s,i)=>{const yo=s.confirmed===true,no=s.confirmed===false;h+=`<div class="srow"><span style="font-size:12px;color:var(--text3);min-width:14px;text-align:right;">${i+1}</span><span class="sn${yo?' done':''}">${s.name}</span><button class="cb yes${yo?' on':''}" onclick="setConf(${w.id},${i},true)"><i class="ti ti-check"></i>발표함</button><button class="cb no${no?' on':''}" onclick="setConf(${w.id},${i},false)"><i class="ti ti-x"></i>불참</button><button class="sm" onclick="swapSlot(${w.id},${i})">교체</button></div>`;});
+      h+=`<div class="card-footer"><button class="btn-announce" onclick="announce(${w.id})"><i class="ti ti-send"></i> 채널 공지</button></div></div>`;
+    });
+  }
+  if(S.tab==='mems'){
+    h+=`<div class="card"><div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;"><input type="text" placeholder="이름" value="${S.nm}" oninput="S.nm=this.value" onkeydown="if(event.key==='Enter')addMem()" style="flex:1;min-width:80px;"><input type="date" value="${S.nj}" oninput="S.nj=this.value" class="dinput" style="width:140px;"><button class="pri" onclick="addMem()">추가</button></div><div style="display:flex;font-size:11px;color:var(--text3);padding-bottom:6px;border-bottom:0.5px solid var(--border);"><span style="flex:1;">이름</span><span style="width:140px;">마지막 발표일</span><span style="width:90px;"></span></div>`;
+    S.members.forEach(m=>{const isNx=!hasNext&&nxtNames.includes(m.name);h+=`<div class="mrow"><span class="mn${!m.active?' off':''}">${m.name}${isNx?`<span class="nb">다음</span>`:''}</span><input type="date" value="${m.lastDate||''}" onchange="setLast(${m.id},this.value)" class="dinput" style="width:130px;"><button class="sm" onclick="toggleActive(${m.id})" style="width:44px;">${m.active?'제외':'복귀'}</button><button class="sm d" onclick="delMem(${m.id})"><i class="ti ti-trash"></i></button></div>`;});
+    h+=`<p class="hint" style="margin-top:10px;"><i class="ti ti-info-circle"></i> 마지막 발표일 오름차순으로 다음 발표자 선정</p></div>`;
+  }
+  if(S.tab==='hist'){
+    const done=sorted.filter(w=>w.slots.some(s=>s.confirmed!==null));
+    if(!done.length)h+=`<p class="empty">확인된 발표 기록이 없습니다.</p>`;
+    done.forEach(w=>{h+=`<div class="card"><div class="wh"><span class="wdate">${w.date}</span></div>`;w.slots.forEach((s,i)=>{const ic=s.confirmed===true?`<i class="ti ti-check" style="color:var(--success);"></i>`:s.confirmed===false?`<i class="ti ti-x" style="color:var(--danger);"></i>`:`<i class="ti ti-clock" style="color:var(--text3);"></i>`;const lb=s.confirmed===true?'발표함':s.confirmed===false?'불참':'미확인';const lbc=s.confirmed===true?'var(--success)':s.confirmed===false?'var(--danger)':'var(--text3)';h+=`<div class="srow"><span style="font-size:12px;color:var(--text3);min-width:14px;">${i+1}</span><span class="sn">${s.name}</span>${ic}<span style="font-size:12px;color:${lbc};">${lb}</span></div>`;});h+=`</div>`;});
+  }
+  document.getElementById('app').innerHTML=h;
+}
+if(ghToken){loadFromGist();}
+</script>
+</body>
+</html>
